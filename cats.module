@@ -1,0 +1,101 @@
+<?php
+// $Id$
+/**
+ * @file
+ * A module that grabs kitten pictures from Google
+ * 
+ * This module provides a randomly selected kitty
+ * pictures sourced from Google. It displays those
+ * photos in every article, but not in pages.
+*/
+
+/**
+ * Implements hook_help().
+*/
+function cats_help($path, $arg) {
+	if ($path == 'admin/help#cats') {
+		return t('A cats module. Grabs a random cat picture from Google.');
+	}
+}
+
+/**
+ * Implements hook_filter_info().
+*/
+function cats_filter_info() {
+	$filters['filter_catpic'] = array(
+		'title' => t('catpic Filter'),
+		'description' => t('Every instance of "catpic" in the input text will be replaced with a preconfigured replacement'),
+		'process callback' => '_cats_filter_catpic_process',
+		'default settings' => array(
+				'cats_catpic' => 'cat'
+		),
+		'settings callback' => '_cats_filter_catpic_settings',
+		'tips callback' => '_cats_filter_catpic_tips',
+	);
+	return $filters;
+}
+
+/**
+ * Implements hook_menu().
+*/
+function cats_menu() {
+	$items['admin/config/cats'] = array(
+		'title' => 'Cats module settings',
+		'description' => 'Cats module settings page',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('cats_admin'),
+		'access arguments' => array('access administration pages'),
+		'type' => MENU_NORMAL_ITEM,
+ 	);
+	return $items;
+}
+
+function cats_admin() {
+	$form = array();
+	$form['cats_animal'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Type of animal to display'),
+		'#default_value' => variable_get('cats_animal', 'cat'),
+		'#description' => t('The type of animal to display for a random photo'),
+		'#required' => TRUE,
+	);
+	return system_settings_form($form);
+}
+
+// function _cats_filter_catpic_settings($form, $form_state, $filter, $format, $defaults) {
+// 	$settings['cats_catpic'] = array(
+// 		'#type' => 'textfield',
+// 		'#title' => t('Kind of Animal'),
+// 		'#default_value' => isset($filter->settings['cats_catpic']) ? $filter->settings['cats_catpic'] : $defaults['cats_catpic'],
+// 		'#description' => t('The type of animal to search for a random picture'),
+// 	);
+// 	return $settings;
+// }
+
+function _cats_filter_catpic_tips($filter, $format, $long = FALSE) {
+	$replacement = isset($filter->settings['cats_catpic']) ? $filter->settings['cats_catpic'] : 'cat';
+	if (!$long) {
+		return t('"catpic" replaced with a random picture of %replacement', array('%replacement' => $replacement));
+	} 
+	else {
+		return t('Every instance of "catpic" in the input text will be replaced with a random picture of configurable kind of animal. The current type of animal is %replacement', array('%replacement'=>$replacement));
+	}
+}
+
+function _cats_filter_catpic_process($text, $filter, $format) {
+	$animal = variable_get('cats_animal');
+	return str_replace('catpic', get_pics($animal), $text);
+}
+
+function get_pics($animal) {
+	if ($animal == null) {
+		$animal = 'cat';
+	}
+	$url = "http://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=".$animal."&rsz=8&safe=active";
+	$getpic = file_get_contents($url);
+	$decode = json_decode($getpic, true);
+	$rand = rand(0,7);
+	$imgsrc = $decode['responseData']['results'][$rand]['url'];
+
+	return '<img src="'.$imgsrc.'" width="600" height="400">';
+}
