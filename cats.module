@@ -5,8 +5,7 @@
  * A module that grabs kitten pictures from Google
  * 
  * This module provides a randomly selected kitty
- * pictures sourced from Google. It displays those
- * photos in every article, but not in pages.
+ * pictures sourced from Google.
 */
 
 /**
@@ -62,15 +61,16 @@ function cats_admin() {
 	return system_settings_form($form);
 }
 
-// function _cats_filter_catpic_settings($form, $form_state, $filter, $format, $defaults) {
-// 	$settings['cats_catpic'] = array(
-// 		'#type' => 'textfield',
-// 		'#title' => t('Kind of Animal'),
-// 		'#default_value' => isset($filter->settings['cats_catpic']) ? $filter->settings['cats_catpic'] : $defaults['cats_catpic'],
-// 		'#description' => t('The type of animal to search for a random picture'),
-// 	);
-// 	return $settings;
-// }
+/* function _cats_filter_catpic_settings($form, $form_state, $filter, $format, $defaults) {
+ 	$settings['cats_catpic'] = array(
+ 		'#type' => 'textfield',
+ 		'#title' => t('Kind of Animal'),
+		'#default_value' => isset($filter->settings['cats_catpic']) ? $filter->settings['cats_catpic'] : $defaults['cats_catpic'],
+ 		'#description' => t('The type of animal to search for a random picture'),
+ 	);
+ 	return $settings;
+ }
+ */
 
 function _cats_filter_catpic_tips($filter, $format, $long = FALSE) {
 	$replacement = isset($filter->settings['cats_catpic']) ? $filter->settings['cats_catpic'] : 'cat';
