@@ -20,19 +20,19 @@ function cats_help($path, $arg) {
 /**
  * Implements hook_filter_info().
 */
-function cats_filter_info() {
-	$filters['filter_catpic'] = array(
-		'title' => t('catpic Filter'),
-		'description' => t('Every instance of "catpic" in the input text will be replaced with a preconfigured replacement'),
-		'process callback' => '_cats_filter_catpic_process',
-		'default settings' => array(
-				'cats_catpic' => 'cat'
-		),
-		'settings callback' => '_cats_filter_catpic_settings',
-		'tips callback' => '_cats_filter_catpic_tips',
-	);
-	return $filters;
-}
+// function cats_filter_info() {
+// 	$filters['filter_catpic'] = array(
+// 		'title' => t('catpic Filter'),
+// 		'description' => t('Every instance of "catpic" in the input text will be replaced with a preconfigured replacement'),
+// 		'process callback' => '_cats_filter_catpic_process',
+// 		'default settings' => array(
+// 				'cats_catpic' => 'cat'
+// 		),
+// 		'settings callback' => '_cats_filter_catpic_settings',
+// 		'tips callback' => '_cats_filter_catpic_tips',
+// 	);
+// 	return $filters;
+// }
 
 /**
  * Implements hook_preprecess_HOOK().
@@ -99,21 +99,21 @@ function cats_admin() {
  }
  */
 
-function _cats_filter_catpic_tips($filter, $format, $long = FALSE) {
-	$replacement = isset($filter->settings['cats_catpic']) ? $filter->settings['cats_catpic'] : 'cat';
-	if (!$long) {
-		return t('"catpic" replaced with a random picture of %replacement', array('%replacement' => $replacement));
-	} 
-	else {
-		return t('Every instance of "catpic" in the input text will be replaced with a random picture of configurable kind of animal. The current type of animal is %replacement', array('%replacement'=>$replacement));
-	}
-}
+// function _cats_filter_catpic_tips($filter, $format, $long = FALSE) {
+// 	$replacement = isset($filter->settings['cats_catpic']) ? $filter->settings['cats_catpic'] : 'cat';
+// 	if (!$long) {
+// 		return t('"catpic" replaced with a random picture of %replacement', array('%replacement' => $replacement));
+// 	} 
+// 	else {
+// 		return t('Every instance of "catpic" in the input text will be replaced with a random picture of configurable kind of animal. The current type of animal is %replacement', array('%replacement'=>$replacement));
+// 	}
+// }
 
-function _cats_filter_catpic_process($text, $filter, $format) {
-	$animal = variable_get('cats_animal');
-	$url = get_pics($animal);
-	return str_replace('catpic', make_img($url), $text);
-}
+// function _cats_filter_catpic_process($text, $filter, $format) {
+// 	$animal = variable_get('cats_animal');
+// 	$url = get_pics($animal);
+// 	return str_replace('catpic', make_img($url), $text);
+// }
 
 function get_pics($animal) {
 	if ($animal == null) {
