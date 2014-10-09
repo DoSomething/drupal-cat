@@ -4,7 +4,7 @@
  * @file
  * A module that grabs kitten pictures from Google
  * 
- * This module provides a randomly selected kitty
+ * This module provides a randomly selected animal
  * pictures sourced from Google.
 */
 
@@ -32,6 +32,33 @@ function cats_filter_info() {
 		'tips callback' => '_cats_filter_catpic_tips',
 	);
 	return $filters;
+}
+
+/**
+ * Implements hook_preprecess_HOOK().
+*/
+function cats_preprocess_node(&$variables) {
+	$node = $variables['node'];
+	if($node->type == 'article') {
+		$animal = variable_get('cats_animal');
+		if($animal == null || $animal == '') {
+			$animal = 'cat';
+		}
+		$url = get_pics($animal);
+		$img = make_img($url);
+		if(isset($variables['body'])) {
+			$body = $variables['body']['0']['value'];
+		} 
+		else {
+			$body = '';
+		}
+		$variables['content']['body']['0']['#markup'] = $img.$body;
+	}
+}
+
+function make_img($url) {
+	$vars = array('path' => $url, 'width' => '100px', 'title'=>'test title','height' => '100px', 'alt' => 'cat image');
+	return theme('image', $vars);
 }
 
 /**
@@ -84,7 +111,8 @@ function _cats_filter_catpic_tips($filter, $format, $long = FALSE) {
 
 function _cats_filter_catpic_process($text, $filter, $format) {
 	$animal = variable_get('cats_animal');
-	return str_replace('catpic', get_pics($animal), $text);
+	$url = get_pics($animal);
+	return str_replace('catpic', make_img($url), $text);
 }
 
 function get_pics($animal) {
@@ -97,5 +125,6 @@ function get_pics($animal) {
 	$rand = rand(0,7);
 	$imgsrc = $decode['responseData']['results'][$rand]['url'];
 
-	return '<img src="'.$imgsrc.'" width="600" height="400">';
+	//return '<img src="'.$imgsrc.'" width="600" height="400">';
+	return $imgsrc;
 }
