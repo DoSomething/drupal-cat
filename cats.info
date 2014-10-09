@@ -1,0 +1,10 @@
+;$Id$
+
+name = Cats
+description = A module for cat pictures.
+package = Drupal 7 Development
+core = 7.x
+files[] = cats.module
+version = 0.0.1
+php = 5.2
+configure = admin/config/cats
